@@ -12,6 +12,8 @@ const PORT = process.env.PORT || 3000;
 // Sets up the Express app to handle data parsing
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.static(__dirname + "/public"));
+app.use(express.static(__dirname + "/db"));
 
 // Routes
 
@@ -29,13 +31,14 @@ app.get("/notes", (req, res) =>
 // Displays all characters
 app.get("/api/notes", (req, res) => {
   let pt = path.join(__dirname, "/db/db.json");
-  console.log("Look at all these notes");
-  let notes;
-  fs.readFile(pt, "utf8", (error, data) =>
-    error ? console.error(error) : (notes = data)
-  );
-  console.log(notes);
-  res.json(notes);
+  console.log("Look at all these notes", pt);
+  fs.readFile(pt, "utf8", (error, data) => {
+    if (error) {
+      console.error(error);
+    }
+    console.log(data);
+    res.json(JSON.parse(data));
+  });
 });
 
 // Create New Characters - takes in JSON input
