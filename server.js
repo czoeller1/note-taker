@@ -2,6 +2,7 @@
 
 const express = require('express');
 const path = require('path');
+const fs = require("fs");
 
 // Sets up the Express App
 
@@ -24,7 +25,14 @@ app.get('/test', (req, res) => console.log(__dirname, req));
 app.get('/notes', (req, res) => res.sendFile(path.join(__dirname, '/public/notes.html')));
 
 // Displays all characters
-app.get('/api/notes', (req, res) => res.json(path.join(__dirname, "/db/db.json")));
+app.get('/api/notes', (req, res) =>{ 
+    let pt = path.join(__dirname, "/db/db.json");
+    let notes;
+    fs.readFile(pt, "utf8", (error, data) =>
+  error ? console.error(error) : notes = data
+);
+    res.json(notes);
+});
 
 
 
