@@ -46,11 +46,15 @@ app.post("/api/notes", (req, res) => {
   // req.body hosts is equal to the JSON post sent from the user
   // This works because of our body parsing middleware
   const newNote = req.body;
+  // gives the new note a unique id using the uuid library
+  // https://www.npmjs.com/package/uuid
   newNote.id = idGen();
   //console.log("POST");
   //console.log(newNote);
+  // gets the path for the json note file
   let pt = path.join(__dirname, "/db/db.json");
 
+  //reads the notes in the json file, adds the new note, then responds with the updated json data
   fs.readFile(pt, "utf8", (error, data) => {
     if (error) {
       console.error(error);
@@ -61,6 +65,7 @@ app.post("/api/notes", (req, res) => {
     //console.log(notes);
     notes.push(newNote);
     //console.log(notes);
+    // writes the new list to the db
     fs.writeFile(pt, JSON.stringify(notes), (err) =>
       err ? console.error(err) : console.log("Success!")
     );
@@ -68,11 +73,14 @@ app.post("/api/notes", (req, res) => {
   });
 });
 
+// deletes a note of the given id from the notes list
 app.delete("/api/notes/:id", (req, res) => {
   let pt = path.join(__dirname, "/db/db.json");
+  // gets the id of the note from the url
   let del = req.params.id;
   //console.log("DELETE");
   //console.log(del);
+  // uses same basic functionality as the post request
   fs.readFile(pt, "utf8", (error, data) => {
     if (error) {
       console.error(error);
@@ -81,6 +89,7 @@ app.delete("/api/notes/:id", (req, res) => {
     //console.log(data);
     let notes = JSON.parse(data);
     //console.log(notes);
+    // filters the array for all notes that don't have the passed id
     let newNotes = notes.filter((el) => el.id != del);
     //console.log(newNotes);
     fs.writeFile(pt, JSON.stringify(newNotes), (err) =>
