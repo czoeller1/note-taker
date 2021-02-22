@@ -67,10 +67,28 @@ app.post("/api/notes", (req, res) => {
     );
     res.json(notes);
   });
-  // Using a RegEx Pattern to remove spaces from newCharacter
-  // You can read more about RegEx Patterns later https://www.regexbuddy.com/regex.html
+});
 
-  //res.json(newCharacter);
+app.delete("/api/notes/:id", (req, res) => {
+  let pt = path.join(__dirname, "/db/db.json");
+  let del = req.params.id;
+  console.log("DELETE");
+  console.log(del);
+  fs.readFile(pt, "utf8", (error, data) => {
+    if (error) {
+      console.error(error);
+    }
+
+    console.log(data);
+    let notes = JSON.parse(data);
+    console.log(notes);
+    let newNotes = notes.filter((el) => el.id != del);
+    console.log(newNotes);
+    fs.writeFile(pt, JSON.stringify(newNotes), (err) =>
+      err ? console.error(err) : console.log("Success!")
+    );
+    res.json(notes);
+  });
 });
 
 // Starts the server to begin listening
