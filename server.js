@@ -23,33 +23,32 @@ app.get("/", (req, res) =>
   res.sendFile(path.join(__dirname, "/public/index.html"))
 );
 
-app.get("/test", (req, res) => console.log(__dirname, req));
-
+// Route for displaying the notes page
 app.get("/notes", (req, res) =>
   res.sendFile(path.join(__dirname, "/public/notes.html"))
 );
 
-// Displays all characters
+// Displays all notes
 app.get("/api/notes", (req, res) => {
   let pt = path.join(__dirname, "/db/db.json");
-  console.log("GET");
+  //console.log("GET");
   fs.readFile(pt, "utf8", (error, data) => {
     if (error) {
       console.error(error);
     }
-    console.log(data);
+    //console.log(data);
     res.json(JSON.parse(data));
   });
 });
 
-// Create New Characters - takes in JSON input
+// Create New note - takes in JSON input
 app.post("/api/notes", (req, res) => {
   // req.body hosts is equal to the JSON post sent from the user
   // This works because of our body parsing middleware
   const newNote = req.body;
   newNote.id = idGen();
-  console.log("POST");
-  console.log(newNote);
+  //console.log("POST");
+  //console.log(newNote);
   let pt = path.join(__dirname, "/db/db.json");
 
   fs.readFile(pt, "utf8", (error, data) => {
@@ -57,11 +56,11 @@ app.post("/api/notes", (req, res) => {
       console.error(error);
     }
 
-    console.log(data);
+    //console.log(data);
     let notes = JSON.parse(data);
-    console.log(notes);
+    //console.log(notes);
     notes.push(newNote);
-    console.log(notes);
+    //console.log(notes);
     fs.writeFile(pt, JSON.stringify(notes), (err) =>
       err ? console.error(err) : console.log("Success!")
     );
@@ -72,18 +71,18 @@ app.post("/api/notes", (req, res) => {
 app.delete("/api/notes/:id", (req, res) => {
   let pt = path.join(__dirname, "/db/db.json");
   let del = req.params.id;
-  console.log("DELETE");
-  console.log(del);
+  //console.log("DELETE");
+  //console.log(del);
   fs.readFile(pt, "utf8", (error, data) => {
     if (error) {
       console.error(error);
     }
 
-    console.log(data);
+    //console.log(data);
     let notes = JSON.parse(data);
-    console.log(notes);
+    //console.log(notes);
     let newNotes = notes.filter((el) => el.id != del);
-    console.log(newNotes);
+    //console.log(newNotes);
     fs.writeFile(pt, JSON.stringify(newNotes), (err) =>
       err ? console.error(err) : console.log("Success!")
     );
