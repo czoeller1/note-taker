@@ -3,6 +3,7 @@
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
+const { v4: idGen } = require("uuid");
 
 // Sets up the Express App
 
@@ -31,7 +32,7 @@ app.get("/notes", (req, res) =>
 // Displays all characters
 app.get("/api/notes", (req, res) => {
   let pt = path.join(__dirname, "/db/db.json");
-  console.log("Look at all these notes", pt);
+  console.log("GET");
   fs.readFile(pt, "utf8", (error, data) => {
     if (error) {
       console.error(error);
@@ -45,15 +46,31 @@ app.get("/api/notes", (req, res) => {
 app.post("/api/notes", (req, res) => {
   // req.body hosts is equal to the JSON post sent from the user
   // This works because of our body parsing middleware
-  const newCharacter = req.body;
+  const newNote = req.body;
+  newNote.id = idGen();
+  console.log("POST");
+  console.log(newNote);
+  let pt = path.join(__dirname, "/db/db.json");
 
+  fs.readFile(pt, "utf8", (error, data) => {
+    if (error) {
+      console.error(error);
+    }
+
+    console.log(data);
+    let notes = JSON.parse(data);
+    console.log(notes);
+    notes.push(newNote);
+    console.log(notes);
+    fs.writeFile(pt, JSON.stringify(notes), (err) =>
+      err ? console.error(err) : console.log("Success!")
+    );
+    res.json(notes);
+  });
   // Using a RegEx Pattern to remove spaces from newCharacter
   // You can read more about RegEx Patterns later https://www.regexbuddy.com/regex.html
-  newCharacter.routeName = newCharacter.name.replace(/\s+/g, "").toLowerCase();
-  console.log(newCharacter);
 
-  characters.push(newCharacter);
-  res.json(newCharacter);
+  //res.json(newCharacter);
 });
 
 // Starts the server to begin listening
